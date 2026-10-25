@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mi calculadora de piso</title>
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--tx:#1d2433;--mut:#6b7385;--ac:#2f6df6;--ac2:#7c5cff;--ok:#16a068;--wa:#d98a00;--ko:#d9435a;--bd:#e5e1d8;--c1:#2f6df6;--c2:#f59e0b;--c3:#94a3b8;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10141d;--card:#192030;--tx:#eef1f7;--mut:#9aa3b8;--ac:#6b97ff;--ac2:#9b84ff;--ok:#38c98a;--wa:#f0b429;--ko:#ff6b81;--bd:#2a3347;--c1:#6b97ff;--c2:#f0b429;--c3:#6b7385;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#10141d;--card:#192030;--tx:#eef1f7;--mut:#9aa3b8;--ac:#6b97ff;--ac2:#9b84ff;--ok:#38c98a;--wa:#f0b429;--ko:#ff6b81;--bd:#2a3347;--c1:#6b97ff;--c2:#f0b429;--c3:#6b7385;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.hero{padding:44px 20px 70px;text-align:center;color:#fff;background:linear-gradient(135deg,#2f6df6,#7c5cff 60%,#c04dff)}
+.hero h1{margin:0 0 8px;font-size:clamp(28px,6vw,46px);letter-spacing:-.02em}.hero p{margin:0 auto;max-width:560px;opacity:.9}
+.wrap{max-width:1080px;margin:-44px auto 40px;padding:0 16px}
+.tabs{display:flex;gap:6px;background:var(--card);padding:6px;border-radius:14px;border:1px solid var(--bd);max-width:520px;margin:0 auto 18px;box-shadow:0 8px 24px #0002}
+.tabs button{flex:1;border:0;background:none;color:var(--mut);font:600 14px inherit;font-family:inherit;padding:11px 8px;border-radius:10px;cursor:pointer}
+.tabs button.on{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff}
+.grid{display:grid;grid-template-columns:340px 1fr;gap:16px}@media(max-width:820px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:18px;margin-bottom:16px}
+h2{font-size:15px;margin:0 0 12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut)}
+label{display:block;font-size:13px;color:var(--mut);margin:10px 0 3px}
+input,select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font:inherit}
+input:focus,select:focus{outline:2px solid var(--ac);border-color:transparent}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.big{border-radius:18px;padding:22px;color:#fff;background:linear-gradient(135deg,#2f6df6,#7c5cff);margin-bottom:16px}
+.big small{opacity:.85;display:block}.big .n{font-size:clamp(34px,8vw,54px);font-weight:800;letter-spacing:-.03em;line-height:1.1}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:16px}
+.k{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px 14px}.k small{color:var(--mut);display:block;font-size:12px}.k b{font-size:20px}
+.pill{display:inline-block;padding:4px 12px;border-radius:99px;font-weight:700;font-size:13px;color:#fff;margin-bottom:8px}
+.stack{display:flex;height:26px;border-radius:8px;overflow:hidden;margin:8px 0}.stack div{height:100%}
+.leg{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--mut)}.leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:8px 6px;text-align:right;border-bottom:1px solid var(--bd)}th:first-child,td:first-child{text-align:left}th{color:var(--mut);font-weight:600;font-size:12px}
+tr.me td{font-weight:700;color:var(--ac)}.sc{overflow-x:auto}
+.note{font-size:12.5px;color:var(--mut)}svg{width:100%;height:auto;display:block}
+.msg{padding:10px 12px;border-radius:10px;background:var(--bg);border-left:4px solid var(--ac);font-size:14px;margin-top:8px}
+</style></head><body>
+<div class="hero"><h1>🏠 Mi calculadora de piso</h1><p>Descubre qué piso puedes permitirte, cuánta entrada necesitas y cuánto te costará de verdad, con impuestos y gastos incluidos.</p></div>
+<div class="wrap">
+<div class="tabs"><button id="t1" class="on">¿Qué puedo comprar?</button><button id="t2">Tengo un piso en mente</button></div>
+<div class="grid">
+<div>
+<div class="card"><h2>Tus ingresos</h2>
+<label>Sueldo neto mensual (€, prorrateado a 12 meses)</label><input id="ing" type="number" min="0" step="50">
+<label>Ingresos netos de tu pareja (€/mes, opcional)</label><input id="ing2" type="number" min="0" step="50">
+<label>Cuotas de otras deudas (€/mes)</label><input id="deu" type="number" min="0" step="10"></div>
+<div class="card"><h2>Tus ahorros</h2>
+<label>Ahorrado hasta hoy (€)</label><input id="aho" type="number" min="0" step="500">
+<label>Puedes ahorrar cada mes (€)</label><input id="ahm" type="number" min="0" step="50"></div>
+<div class="card"><h2>La compra</h2>
+<div id="pbox"><label>Precio del piso (€)</label><input id="pre" type="number" min="0" step="5000"></div>
+<label>Comunidad autónoma</label><select id="cc"></select>
+<label>Tipo de vivienda</label><select id="tip"><option value="u">Segunda mano (ITP)</option><option value="n">Obra nueva (IVA + AJD)</option></select>
+<label>€/m² de la zona (para estimar metros)</label><input id="m2" type="number" min="0" step="100">
+<label>Tipo de hipoteca</label><select id="hip"><option value="f">Fija</option><option value="v">Variable (Euríbor + diferencial)</option></select>
+<div id="fx"><label>Interés anual (%): <b id="iv"></b></label><input id="int" type="number" step="0.01" min="0" max="15"><input id="sl" type="range" min="0" max="8" step="0.05" style="padding:0;margin-top:8px"></div>
+<div id="vr" class="two"><div><label>Euríbor (%)</label><input id="eur" type="number" step="0.01"></div><div><label>Diferencial (%)</label><input id="dif" type="number" step="0.01"></div></div>
+<label>Plazo (años)</label><input id="pla" type="number" min="5" max="40">
+<div class="two"><div><label>Financiación (%)</label><input id="fin" type="number" min="50" max="100"></div><div><label>Endeudamiento máx. (%)</label><input id="rat" type="number" min="10" max="50"></div></div>
+<p class="note">Valores por defecto típicos: el banco suele financiar hasta el 80 % y recomienda no pasar del 35 % de tus ingresos. Ajusta lo que quieras.</p></div>
+<div class="card"><h2>Ajustes avanzados</h2>
+<label>Bonificación en impuestos (%), p. ej. 100 si tienes ayuda joven</label><input id="bon" type="number" min="0" max="100" step="5">
+<label>Reforma y muebles (€)</label><input id="ref" type="number" min="0" step="500">
+<label>Gastos mensuales del piso: comunidad, IBI, seguros (€)</label><input id="gm" type="number" min="0" step="10">
+<label>Alquiler que pagas ahora (€/mes, para comparar)</label><input id="alq" type="number" min="0" step="50">
+<label>Amortización extra cada mes (€)</label><input id="ext" type="number" min="0" step="25">
+<button id="rs" style="margin-top:14px;width:100%;padding:10px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font:600 14px inherit;font-family:inherit;cursor:pointer">Restablecer valores</button></div>
+</div>
+<div id="out"></div>
+</div></div>
+<script>
+var CC={"Andalucía":[7,1.2],"Aragón":[8,1.5],"Asturias":[8,1.2],"Baleares":[8,1.2],"Canarias":[6.5,0.75],"Cantabria":[10,1.5],"Castilla-La Mancha":[9,1.5],"Castilla y León":[8,1.5],"Cataluña":[10,1.5],"C. Valenciana":[10,1.5],"Extremadura":[8,1.5],"Galicia":[9,1.5],"Madrid":[6,0.75],"Murcia":[8,1.5],"Navarra":[6,0.5],"País Vasco":[4,0.5],"La Rioja":[7,1]};
+var D={ing:2000,ing2:0,deu:0,aho:40000,ahm:500,pre:250000,cc:"Madrid",tip:"u",m2:3500,int:3,pla:30,fin:80,rat:35,hip:"f",eur:2.3,dif:0.7,ext:0,ref:0,gm:150,alq:0,bon:0};
+var DEF=JSON.parse(JSON.stringify(D));var mode=1,$=function(i){return document.getElementById(i)};
+try{var s=JSON.parse(localStorage.getItem("piso")||"{}");for(var k in s)D[k]=s[k]}catch(e){}
+$("cc").innerHTML=Object.keys(CC).map(function(c){return"<option>"+c+"</option>"}).join("");
+var ids=Object.keys(D);ids.forEach(function(i){$(i).value=D[i];$(i).addEventListener("input",run)});
+var E=function(n){return new Intl.NumberFormat("es-ES",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(n)};
+function pay(L,r,y){var i=r/1200,n=y*12;return i?L*i/(1-Math.pow(1+i,-n)):L/n}
+function pv(c,r,y){var i=r/1200,n=y*12;return i?c*(1-Math.pow(1+i,-n))/i:c*n}
+function sim(L,r,c,x){var i=r/1200,b=L,m=0,t=0,i1=0;while(b>0.5&&m<1200){var a=b*i;t+=a;if(m<12)i1+=a;b-=Math.min(b,c+x-a);m++}return{m:m,t:t,i1:i1}}
+function costs(P,v){var c=CC[v.cc],t=v.tip=="n"?P*(0.10+c[1]/100):P*c[0]/100;return{imp:t*(1-v.bon/100),otr:P*0.012+700}}
+function run(){
+var v={};ids.forEach(function(i){var e=$(i);v[i]=e.tagName=="SELECT"?e.value:(parseFloat(e.value)||0)});
+try{localStorage.setItem("piso",JSON.stringify(v))}catch(e){}
+$("pbox").style.display=mode==2?"block":"none";
+if(v.hip=="v")v.int=v.eur+v.dif;var va=v.hip=="v";$("fx").style.display=va?"none":"block";$("vr").style.display=va?"grid":"none";$("iv").textContent=v.int.toFixed(2)+" %";$("sl").value=v.int;
+var inc=v.ing+v.ing2,f=v.fin/100,maxC=Math.max(0,inc*v.rat/100-v.deu),loan=pv(maxC,v.int,v.pla),Pc=loan/f;
+var c0=CC[v.cc],tr=v.tip=="n"?0.10+c0[1]/100:c0[0]/100,Ps=Math.max(0,(v.aho-v.ref-700)/(1-f+tr*(1-v.bon/100)+0.012));
+var P=mode==1?Math.min(Pc,Ps):v.pre,h="";
+var L=P*f,co=costs(P,v),ent=P-L,tot=ent+co.imp+co.otr+v.ref,cuota=pay(L,v.int,v.pla),ratio=inc?(cuota+v.deu)/inc*100:0;
+if(mode==1){
+var lim=Pc<Ps?"tu <b>sueldo</b> (la cuota máxima que te dejaría el banco)":"tus <b>ahorros</b> (la entrada y los gastos iniciales)";
+h+='<div class="big"><small>Con tus datos, podrías comprar un piso de hasta</small><div class="n">'+E(P)+'</div><small>Tu límite lo marcan '+lim.replace(/<\/?b>/g,"")+'</small></div>';
+h+='<div class="msg">'+(Pc<Ps?"Por sueldo llegarías a <b>"+E(Pc)+"</b>, pero con tus ahorros podrías llegar a <b>"+E(Ps)+"</b>. Lo que te frena es la cuota.":"Por sueldo llegarías a <b>"+E(Pc)+"</b>, pero tus ahorros solo dan para <b>"+E(Ps)+"</b>. Lo que te frena es la entrada.")+'</div><br>';
+}else{
+var ok=v.aho>=tot,col=ratio<=30&&ok?"var(--ok)":ratio<=v.rat&&ok?"var(--wa)":"var(--ko)";
+var txt=!ok?"Te faltan "+E(tot-v.aho)+" de ahorros":ratio<=30?"Cómodo":ratio<=v.rat?"Ajustado pero viable":"El banco probablemente no lo aprobaría";
+h+='<div class="card"><span class="pill" style="background:'+col+'">'+txt+'</span><div style="font-size:15px">Con un piso de <b>'+E(P)+'</b> pagarías <b>'+E(cuota)+'/mes</b>, un <b>'+ratio.toFixed(1)+' %</b> de tus ingresos (incluyendo otras deudas).</div></div>';
+}
+var perc=inc?inc:1,minInc=(cuota+v.deu)/(v.rat/100),falta=Math.max(0,tot-v.aho),meses=v.ahm>0?Math.ceil(falta/v.ahm):0;
+h+='<div class="kpis"><div class="k"><small>Cuota mensual</small><b>'+E(cuota)+'</b></div><div class="k"><small>Entrada ('+(100-v.fin)+' %)</small><b>'+E(ent)+'</b></div><div class="k"><small>Impuestos</small><b>'+E(co.imp)+'</b></div><div class="k"><small>Notaría, registro y otros</small><b>'+E(co.otr)+'</b></div><div class="k"><small>Ahorro total necesario</small><b>'+E(tot)+'</b></div><div class="k"><small>Hipoteca</small><b>'+E(L)+'</b></div><div class="k"><small>Coste mensual real</small><b>'+E(cuota+v.gm)+'</b></div><div class="k"><small>Ingresos mínimos</small><b>'+E(minInc)+'/mes</b></div><div class="k"><small>Metros estimados</small><b>'+(v.m2?Math.round(P/v.m2):0)+' m²</b></div></div>';
+h+='<div class="card"><h2>¿Cuánto dinero necesitas el primer día?</h2><div class="stack"><div style="width:'+ent/tot*100+'%;background:var(--c1)"></div><div style="width:'+co.imp/tot*100+'%;background:var(--c2)"></div><div style="width:'+co.otr/tot*100+'%;background:var(--c3)"></div><div style="width:'+v.ref/tot*100+'%;background:var(--ok)"></div></div><div class="leg"><span><i style="background:var(--c1)"></i>Entrada</span><span><i style="background:var(--c2)"></i>Impuestos</span><span><i style="background:var(--c3)"></i>Notaría y otros</span><span><i style="background:var(--ok)"></i>Reforma y muebles</span></div>';
+h+='<div class="msg">'+(falta>0?(v.ahm>0?"Te faltan <b>"+E(falta)+"</b>. Ahorrando "+E(v.ahm)+"/mes llegarías en <b>"+Math.floor(meses/12)+" años y "+meses%12+" meses</b>.":"Te faltan <b>"+E(falta)+"</b>. Indica cuánto puedes ahorrar al mes para calcular el plazo."):"¡Ya tienes ahorrado lo necesario! Te sobrarían <b>"+E(v.aho-tot)+"</b> para muebles, reformas o colchón.")+'</div></div>';
+h+='<div class="card"><h2>Compara plazos</h2><div class="sc"><table><tr><th>Plazo</th><th>Cuota</th><th>Intereses totales</th><th>Total pagado</th></tr>';
+[15,20,25,30,35,40].forEach(function(y){var c=pay(L,v.int,y),t=c*y*12;h+='<tr'+(y==v.pla?' class="me"':'')+'><td>'+y+' años</td><td>'+E(c)+'</td><td>'+E(t-L)+'</td><td>'+E(t)+'</td></tr>'});
+h+='</table></div></div><div class="card"><h2>¿Y si cambia el interés?</h2><div class="sc"><table><tr><th>Interés</th><th>Cuota</th><th>Diferencia</th></tr>';
+[-1,0,1,2].forEach(function(d){var r=Math.max(0,v.int+d),c=pay(L,r,v.pla);h+='<tr'+(d==0?' class="me"':'')+'><td>'+r.toFixed(1)+' %</td><td>'+E(c)+'</td><td>'+(d==0?"-":(c>=cuota?"+":"")+E(c-cuota))+'</td></tr>'});
+h+='</table></div><p class="note">Útil para hipotecas variables: mira cuánto subiría tu cuota si el Euríbor sube.</p></div>';
+var s0=sim(L,v.int,cuota,0),s1=sim(L,v.int,cuota,v.ext),cap1=cuota*12-s0.i1,dm=s0.m-s1.m,dd=cuota+v.gm-cap1/12-v.alq;
+h+='<div class="card"><h2>¿Alquilar o comprar?</h2><div class="msg">'+(v.alq>0?'Ahora pagas <b>'+E(v.alq)+'</b> de alquiler. Comprar te costaría <b>'+E(cuota+v.gm)+'/mes</b> (cuota + gastos del piso), pero unos <b>'+E(cap1/12)+'/mes</b> de la cuota son capital que acabas poseyendo. Neto, comprar sería <b>'+E(Math.abs(dd))+'/mes</b> '+(dd>0?'más caro':'más barato')+' que alquilar.':'Indica en “Ajustes avanzados” lo que pagas de alquiler para compararlo con la compra.')+'</div></div>';
+h+='<div class="card"><h2>Amortización anticipada</h2><div class="msg">'+(v.ext>0?'Pagando <b>'+E(v.ext)+'</b> extra cada mes terminarías <b>'+Math.floor(dm/12)+' años y '+dm%12+' meses</b> antes y te ahorrarías <b>'+E(s0.t-s1.t)+'</b> en intereses.':'Pon una cantidad en “Amortización extra cada mes” y verás cuánto tiempo e intereses te ahorras.')+'</div></div>';
+var bal=L,bars="",W=640,H=170,n=v.pla,bw=W/n,mx=cuota*12,i=v.int/1200;
+for(var y=0;y<n;y++){var it=0,cp=0;for(var m=0;m<12;m++){var a=bal*i,p=cuota-a;it+=a;cp+=p;bal-=p}
+var hi=it/mx*H,hc=cp/mx*H;bars+='<rect x="'+(y*bw+1)+'" y="'+(H-hc)+'" width="'+(bw-2)+'" height="'+hc+'" fill="var(--c1)" rx="2"/><rect x="'+(y*bw+1)+'" y="'+(H-hc-hi)+'" width="'+(bw-2)+'" height="'+hi+'" fill="var(--c2)" rx="2"/>'}
+h+='<div class="card"><h2>Qué pagas cada año: capital vs. intereses</h2><svg viewBox="0 0 '+W+' '+(H+20)+'">'+bars+'<text x="0" y="'+(H+15)+'" font-size="11" fill="var(--mut)">Año 1</text><text x="'+W+'" y="'+(H+15)+'" font-size="11" fill="var(--mut)" text-anchor="end">Año '+n+'</text></svg><div class="leg"><span><i style="background:var(--c1)"></i>Capital</span><span><i style="background:var(--c2)"></i>Intereses</span></div><p class="note">Al principio casi todo son intereses: amortizar pronto ahorra mucho.</p></div>';
+h+='<p class="note">Cálculo orientativo con sistema francés. Los impuestos (ITP, AJD) varían según comunidad y situación personal (descuentos para jóvenes, familias numerosas, etc.). Consulta con tu banco y una gestoría antes de decidir.</p>';
+$("out").innerHTML=h}
+function setM(m){mode=m;$("t1").className=m==1?"on":"";$("t2").className=m==2?"on":"";run()}
+$("t1").onclick=function(){setM(1)};
+$("sl").addEventListener("input",function(){$("int").value=this.value;run()});
+$("rs").onclick=function(){try{localStorage.removeItem("piso")}catch(e){}ids.forEach(function(i){$(i).value=DEF[i]});run()};$("t2").onclick=function(){setM(2)};run();
+</script></body></html>
